@@ -1,0 +1,152 @@
+/* Reset margins and paddings */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    display: flex; /* Flexbox for center alignment */
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #000000;
+    font-family: Poppins, sans-serif;
+}
+
+.container {
+    display: flex; /* Flexbox for main container */
+    width: 80%;
+    max-width: 900px;
+    height: 70vh;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    overflow: hidden;
+    flex-direction: row; /* Ensures left and right panels are side by side */
+}
+
+/* Left Panel with Dark Background */
+.left-panel {
+    background-color: #0a192f;
+    width: 50%;
+    color: #FFFFFF;
+    display: flex; /* Flexbox for alignment within the panel */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+}
+
+.logo {
+    width: 80px;
+    margin-bottom: 20px;
+}
+
+.left-panel h1 {
+    font-family: 'Cantora One', sans-serif;
+    font-size: 44.64px;
+    line-height: 55.8px;
+    font-weight: 400;
+}
+
+.left-footer {
+    position: absolute;
+    bottom: 20px;
+    text-align: center;
+    width: 100%;
+    font-size: 0.8em;
+    color: #CCCCCC;
+}
+
+/* Right Panel for Sign-Up Form */
+.right-panel {
+    background-color: #FFFFFF;
+    width: 50%;
+    display: flex; /* Flexbox for form panel */
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+.right-panel h2 {
+    color: #0a192f;
+    margin-bottom: 5px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 32px;
+    line-height: 48px;
+    font-weight: 600;
+}
+
+.right-panel p {
+    color: rgba(8, 20, 52, 1);
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    line-height: 30px;
+    font-weight: 600;
+}
+
+.right-panel a {
+    color: #0a192f;
+    text-decoration: none;
+}
+
+/* Sign-Up Form Styling */
+form {
+    display: flex; /* Flexbox for form layout */
+    flex-direction: column;
+    margin-top: 15px;
+}
+
+label {
+    font-size: 0.9em;
+    color: #0a192f;
+    margin-bottom: 5px;
+}
+
+input {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    border: 1px solid #CCCCCC;
+    font-size: 1em;
+    background-color: #f0f0f0;
+    color: #333333;
+}
+
+button {
+    width: 200px;
+    height: 64px;
+    margin-top: 10px;
+    background-color: #0a192f;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 15px;
+    font-size: 1em;
+    cursor: pointer;
+    align-self: flex-start; /* Flexbox for button alignment */
+}
+
+button:hover {
+    background-color: #1e3a5f;
+}
+
+.coal_mine_text {
+    font-family: 'Cantarell', sans-serif;
+    font-size: 18.17px;
+    line-height: 25.73px;
+    font-weight: 400;
+    padding: 0px 0px 0px 74px;
+}
+
+.copyright {
+    font-family: 'Inter', sans-serif;
+    font-size: 15.68px;
+    line-height: 25.03px;
+}
+
+.underline{
+    font-weight: bold !important; 
+    text-decoration: underline !important; 
+}

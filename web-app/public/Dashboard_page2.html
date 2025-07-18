@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="./Assets-MainPage/favicon.ico" type="image/x-icon">
+    <title>Dashboard - Shift Log Page</title>
+    <link rel="stylesheet" href="./Dashboard_page2.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@40,400,0,0&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0&display=swap"
+    />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.7/handlebars.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  </head>
+  <body>
+    <div class="masterContainer">
+      <nav class="navbar">
+        <div class="navDiv1">
+          <img src="./Assets-MainPage/logo.png" alt="" srcset="" />
+        </div>
+        <div class="navDiv2">
+          <p class="websiteName cantora-one-regular">
+            Black Gold Shift
+          </p>
+        </div>
+        <div class="navDiv3">
+          <div class="accountProfile"></div>
+        </div>
+      </nav>
+      <div class="sidebar">
+        <button type="button" class="sidebarButtons">
+          <span class="material-symbols-outlined" id="monitoringButton">
+            monitoring
+          </span>
+        </button>
+        <button type="button" class="sidebarButtons" id="tableSectionButton">
+          <span class="material-symbols-outlined"> table_chart </span>
+        </button>
+      </div>
+      <div class="containtBox">
+        <div class="containtBoxDiv1">
+          <div class="containtBoxDiv1Div1">
+            <p class="sectionName poppins-semibold">Shift Log Section</p>
+          </div>
+          <div class="containtBoxDiv1Div2">
+            <button
+              type="button"
+              class="analysisButton poppins-semibold"
+              id="Generate-Log-Button"
+            >
+              Generate Log
+            </button>
+            <button
+              type="button"
+              class="analysisButton poppins-semibold"
+              id="GeneratePDFButton"
+            >
+              Generate PDF
+            </button>
+          </div>
+        </div>
+        <div class="containtBoxDiv2">
+          <div class="table-container" id="all-table-container">
+            <script id="table-template" type="text/x-handlebars-template">
+              <!-- Overburden Section -->
+              <div class="table-title">Overburden</div>
+              <br />
+              <br />
+              <table>
+                <tr class="section-title">
+                  <th colspan="6">Excavator</th>
+                </tr>
+                <tr>
+                  <th>SI</th>
+                  <th>No</th>
+                  <th>Bench No</th>
+                  <th colspan="3">QB Quantity ('000 cu meter)</th>
+                </tr>
+                <tr>
+                  <td>{{overburden_Shovel_SIno}}</td>
+                  <td>{{overburden_Shovel_Shovelno}}</td>
+                  <td>{{overburden_Shovel_Benchno}}</td>
+                  <td><b>Solid:</b> {{overburden_Shovel_Solidquantity}}</td>
+                  <td><b
+                    >Rehandling:</b>{{overburden_Shovel_Rehandalingquantity}}</td>
+                  <td><b>Total:</b>{{overburden_Shovel_Totalquantity}}</td>
+                </tr>
+              </table>
+              <br />
+              <table>
+                <tr class="section-title">
+                  <th colspan="8">Tipper</th>
+                </tr>
+                <tr>
+                  <th>SI</th>
+                  <th>No</th>
+                  <th>Bench No</th>
+                  <th>Dumper Factor</th>
+                  <th>Trips</th>
+                  <th colspan="3">QB Quantity ('000 cu meter)</th>
+                </tr>
+                <tr>
+                  <td>
+                    {{overburden_Tripper_SIno}}</td>
+                  <td>{{overburden_Tripper_Tripperno}}</td>
+                  <td>{{overburden_Tripper_Benchno}}</td>
+                  <td>{{overburden_Tripper_Dumperfac}}
+                  </td>
+                  <td>{{overburden_Tripper_Tripsno}}</td>
+                  <td><b>Solid:</b>{{overburden_Tripper_Soilquantity}}
+                  </td>
+                  <td><b
+                    >Rehandling:</b>{{overburden_Tripper_Rehanquantity}}</td>
+                  <td><b>Total:</b> {{overburden_Tripper_Totalquantity}}</td>
+                </tr>
+              </table>
+              <br />
+              <table>
+                <tr class="section-title">
+                  <th colspan="6">Drilling</th>
+                </tr>
+                <tr>
+                  <th>Sl</th>
+                  <th>No</th>
+                  <th>Bench No</th>
+                  <th>N. Shot holes</th>
+                  <th>Drill Meters</th>
+                  <th>Total</th>
+                </tr>
+                <tr>
+                  <td>{{overburden_Drill_Serialno}}</td>
+                  <td>{{overburden_Drill_Drillno}}</td>
+                  <td>{{overburden_Drill_Benchno}}</td>
+                  <td>{{overburden_Drill_Noofshotholesdrilled}}</td>
+                  <td>{{overburden_Drill_Drillingmeter}}</td>
+                  <td>{{overburden_Drill_Total}}</td>
+                </tr>
+              </table>
+              <br />
+              <table>
+                <tr class="section-title">
+                  <th colspan="6">Explosives</th>
+                </tr>
+                <tr>
+                  <th>Sl</th>
+                  <th>Bench</th>
+                  <th>N. holes charged</th>
+                  <th>N. holes Blasted</th>
+                  <th>Explos Charged (Tonne)</th>
+                  <th>Explos Blasted (Tonne)</th>
+                </tr>
+                <tr>
+                  <td>{{overburden_Explosives_SIno}}</td>
+                  <td>{{overburden_Explosives_Benchno}}</td>
+                  <td>{{overburden_Explosives_Noholescharged}}</td>
+                  <td>{{overburden_Explosives_NoholesBlasetedd}}</td>
+                  <td>{{overburden_Explosives_Explosivescharged}}</td>
+                  <td>{{overburden_Explosives_Explosiveblasted}}</td>
+                </tr>
+              </table>
+              <br />
+              <br />
+              <!-- Coal Mining Section -->
+              <div class="table-title">Coal Mining</div>
+              <br />
+              <br />
+              <table>
+                <tr class="section-title">
+                  <th colspan="6">Excavator</th>
+                </tr>
+                <tr>
+                  <th rowspan="2">Sl No</th>
+                  <th rowspan="2">Name / No</th>
+                  <th rowspan="2">Bench No</th>
+
+                  <th rowspan="2">Coal Qnty. excavated (Te)</th>
+                </tr>
+                <tr></tr>
+                <tr>
+                  <td>{{coal_Shovel_Serialno}}</td>
+                  <td>{{coal_Shovel_Shovelno}}</td>
+                  <td>{{coal_Shovel_Benchno}}</td>
+
+                  <td>{{coal_Shovel_Coalquantity}}</td>
+                </tr>
+              </table>
+              <br />
+              <table>
+                <tr class="section-title">
+                  <th colspan="8">Tipper</th>
+                </tr>
+                <tr>
+                  <th rowspan="2">Sl No</th>
+                  <th rowspan="2">Name / No</th>
+                  <th rowspan="2">Bench No</th>
+                  <th rowspan="2">Dumper Factor<br />(Te / Trip)</th>
+                  <th colspan="2">Without Weighment</th>
+                  <th colspan="2">With Weighment</th>
+                </tr>
+                <tr>
+
+                  <th>Trips<br />(Nos.)</th>
+                  <th>Coal Quantity<br />(T)</th>
+                  <th>Trips<br />(Nos.)</th>
+                  <th>Coal Quantity<br />(T)</th>
+                </tr>
+                <tr>
+                  <td>{{coal_Tripper_Serialno}}</td>
+                  <td>{{coal_Tripper_Tripperno}}</td>
+                  <td>{{coal_Tripper_Benchno}}</td>
+                  <td>{{coal_Tripper_Dumperfactor}}</td>
+                  <td>{{coal_Tripper_Tripsnowithoutwieghts}}</td>
+                  <td>{{coal_Tripper_CoalQuantitywithoutweights}}</td>
+                  <td>{{coal_Tripper_Tripsnowithweights}}</td>
+                  <td>{{coal_Tripper_CoalQuantitywithweights}}</td>
+                </tr>
+              </table>
+              <br />
+              <table>
+                <tr class="section-title">
+                  <th colspan="6">Drilling</th>
+                </tr>
+                <tr>
+                  <th>Sl</th>
+                  <th>No</th>
+                  <th>Bench No</th>
+                  <th>N. Shot holes</th>
+                  <th>Drill Meters</th>
+                  <th>Total</th>
+                </tr>
+                <tr>
+                  <td>{{coal_Drill_Serialno}}</td>
+                  <td>{{coal_Drill_Drillno}}</td>
+                  <td>{{coal_Drill_Benchno}}</td>
+                  <td>{{coal_Drill_Noofshotholesdrilled}}</td>
+                  <td>{{coal_Drill_Drillingmeter}}</td>
+                  <td>{{coal_Drill_Total}}</td>
+                </tr>
+              </table>
+              <br />
+              <table>
+                <tr class="section-title">
+                  <th colspan="6">Explosives</th>
+                </tr>
+                <tr>
+                  <th>Sl</th>
+                  <th>Bench</th>
+                  <th>N. holes charged</th>
+                  <th>N. holes Blasted</th>
+                  <th>Explos Charged (Tonne)</th>
+                  <th>Explos Blasted (Tonne)</th>
+                </tr>
+                <tr>
+                  <td>{{coal_Explosives_SIno}}</td>
+                  <td>{{coal_Explosives_Benchno}}</td>
+                  <td>{{coal_Explosives_Noholescharged}}</td>
+                  <td>{{coal_Explosives_NoholesBlasetedd}}</td>
+                  <td>{{coal_Explosives_Explosivescharged}}</td>
+                  <td>{{coal_Explosives_Explosiveblasted}}</td>
+                </tr>
+              </table>
+              <br />
+              <br />
+              <!-- Surface Miners Section -->
+              <div class="table-title">Surface Miners</div>
+              <br />
+              <br />
+              <table>
+                <tr>
+                  <th>Sl</th>
+                  <th>No</th>
+                  <th>Bench No</th>
+                  <th>Coal Qnty. cut ('000 Te)</th>
+                </tr>
+                <tr>
+                  <td>{{coal_Surfaceminer_Serialno}}</td>
+                  <td>{{coal_Surfaceminer_Minerno}}</td>
+                  <td>{{coal_Surfaceminer_Benchno}}</td>
+                  <td>{{coal_Surfaceminer_Coalquantity}}</td>
+                </tr>
+              </table>
+              <br />
+              <br />
+              <!-- Coal Washery Section -->
+              <div class="table-title">Coal Washery</div>
+              <br />
+              <br />
+              <table>
+                <tr class="section-title">
+                  <th rowspan="2">Raw coal fed (tonnes)</th>
+                  <th colspan="4">Production of washed coal ('000 te)</th>
+                  <th colspan="4">Yield (%)</th>
+                </tr>
+                <tr>
+                  <th>Clean Coal</th>
+                  <th>Middling</th>
+                  <th>Rejects</th>
+                  <th>Slurry</th>
+                  <th>Clean Coal</th>
+                  <th>Middling</th>
+                  <th>Slurry</th>
+                  <th>Rejects</th>
+                </tr>
+                <tr>
+                  <td>{{washery_Rawcoal}}</td>
+                  <td>{{washery_Cleancoal}}</td>
+                  <td>{{washery_Midding}}</td>
+                  <td>{{washery_Rejected}}</td>
+                  <td>{{washery_Slurry}}</td>
+                  <td>{{cleanCoalPercent}}</td>
+                  <td>{{middlingPercent}}</td>
+                  <td>{{rejectedPercent}}</td>
+                  <td>{{slurryPercent}}</td>
+
+                </tr>
+              </table>
+
+              <br />
+              <br />
+              <!-- Coal Dispatch Section -->
+              <div class="table-title">Coal Dispatch</div>
+              <br />
+              <br />
+              <table>
+                <tr>
+                  <th>Mode</th>
+                  <th>Grade</th>
+                  <th>Target</th>
+                  <th>Actual</th>
+                </tr>
+                <tr>
+                  <td>Rail</td>
+                  <td>{{dispatch_Rail_Grade}}</td>
+                  <td>{{dispatch_Rail_Target}}</td>
+                  <td>{{dispatch_Rail_Actual}}</td>
+                </tr>
+                <tr>
+                  <td>Road</td>
+                  <td>{{dispatch_Road_Grade}}</td>
+                  <td>{{dispatch_Road_Target}}</td>
+                  <td>{{dispatch_Road_Actual}}</td>
+                </tr>
+              </table>
+
+              <!-- template.hbs -->
+            </script>
+
+            <br />
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="./Dashboard_page2.js"></script>
+  
+    <script type="module" src="./GeneratePDF.js"></script>
+  </body>
+</html>

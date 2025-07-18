@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "749490773831",
+    "firebase_url": "https://coalminesapp-default-rtdb.firebaseio.com",
+    "project_id": "coalminesapp",
+    "storage_bucket": "coalminesapp.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:749490773831:android:a865aa46c581eae89a7662",
+        "android_client_info": {
+          "package_name": "com.example.myapplication"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLewAJ9Wez6ie8E_373IutKSORm8dw-yw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
