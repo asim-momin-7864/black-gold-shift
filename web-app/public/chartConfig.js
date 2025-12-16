@@ -1,10 +1,16 @@
 // chartConfig.js
+const docSnap = await getDoc(docRef);
+if (!docSnap.exists()) {
+  console.warn("No ShiftLog for", formattedDate);
+  // Friendly UI fallback:
+  const msgEl = document.getElementById("noDataMessage");
+  if (msgEl) msgEl.innerText = `No shift data available for ${formattedDate}.`;
+  return; // stop further rendering
+}
+const data = docSnap.data();
 
-import { db } from "./firebaseConfig.js";
-import {
-  doc,
-  getDoc,
-} from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+
 
 // Function to fetch data and render charts
 export async function renderCharts() {
