@@ -1,16 +1,9 @@
 
 // GeneratePDF.js (top)
-import { storage } from "./firebase.js";
+import { storage } from "../firebase/firebase.js";
 import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
 
 
-let app;
-if (!getApps().length) {
-  app = initializeApp(firebaseConfig);
-} else {
-  app = getApps()[0];
-}
-const storage = getStorage(app);
 
 document
   .getElementById("GeneratePDFButton")
