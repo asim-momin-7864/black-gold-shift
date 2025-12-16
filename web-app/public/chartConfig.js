@@ -1,80 +1,90 @@
 // chartConfig.js
-const docSnap = await getDoc(docRef);
-if (!docSnap.exists()) {
-  console.warn("No ShiftLog for", formattedDate);
-  // Friendly UI fallback:
-  const msgEl = document.getElementById("noDataMessage");
-  if (msgEl) msgEl.innerText = `No shift data available for ${formattedDate}.`;
-  return; // stop further rendering
-}
-const data = docSnap.data();
 
+import { db } from "../firebase/firebase.js";
+import {
+  doc,
+  getDoc,
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-
-
-// Function to fetch data and render charts
 export async function renderCharts() {
   try {
     const formattedDate = getFormattedDate();
     const docRef = doc(db, "ShiftLog", formattedDate);
     const docSnap = await getDoc(docRef);
-    const data = docSnap.exists() ? docSnap.data() : null;
-    console.log(data);
 
-    const newdataObject = {};
-
-    for (const key in data) {
-      const value = data[key];
-      newdataObject[key] = isNaN(value) ? value : Number(value);
-    }
-
-    console.log("new", newdataObject);
-    // Box value Manipulation
-    document.getElementById("BoxValue1").innerText =
-      newdataObject.coal_Surfaceminer_Minerno;
-    document.getElementById("BoxValueName1").innerText = "No. Surface Minor";
-    document.getElementById("BoxValue2").innerText =
-      newdataObject.coal_Explosives_Explosivescharged +
-      newdataObject.overburden_Explosives_Explosivescharged;
-    document.getElementById("BoxValueName2").innerText = "Total Explosives";
-    document.getElementById("BoxValue3").innerText =
-      newdataObject.washery_Rawcoal;
-    document.getElementById("BoxValueName3").innerText = "Total Raw Coal";
-    document.getElementById("BoxValue4").innerText =
-      newdataObject.dispatch_Rail_Actual + newdataObject.dispatch_Road_Actual;
-    document.getElementById("BoxValueName4").innerText = "Total Coal Dispatch";
-
-    if (!data) {
-      console.error("Document not found!");
+    if (!docSnap.exists()) {
+      alert("No shift data available for today.");
       return;
     }
 
-    // Chart data and configuration
+    const data = docSnap.data();
+
+    // ---------- INFO BOXES ----------
+    setText("BoxValue1", data.coal_Surfaceminer_Minerno);
+    setText("BoxValueName1", "No. Surface Miner");
+
+    setText(
+      "BoxValue2",
+      (data.coal_Explosives_Explosivescharged || 0) +
+        (data.overburden_Explosives_Explosivescharged || 0)
+    );
+    setText("BoxValueName2", "Total Explosives");
+
+    setText("BoxValue3", data.washery_Rawcoal);
+    setText("BoxValueName3", "Total Raw Coal");
+
+    setText(
+      "BoxValue4",
+      (data.dispatch_Rail_Actual || 0) + (data.dispatch_Road_Actual || 0)
+    );
+    setText("BoxValueName4", "Total Coal Dispatch");
+
+    // ---------- PIE CHARTS ----------
+
     renderPieChart(
       "pieChart1",
       "Coal Washery Section",
       ["Clean Coal", "Middling", "Rejected", "Slurry"],
       [
-        data.washery_Cleancoal,
-        data.washery_Midding,
-        data.washery_Rejected,
-        data.washery_Slurry,
+        data.washery_Cleancoal || 0,
+        data.washery_Midding || 0,
+        data.washery_Rejected || 0,
+        data.washery_Slurry || 0,
       ],
-      [
-        "rgb(54, 162, 235)",
-        "rgb(255, 205, 86)",
-        "rgb(255, 99, 132)",
-        "rgb(52, 168, 83)",
-      ]
+      ["#36a2eb", "#ffcd56", "#ff6384", "#34a853"]
     );
 
     renderPieChart(
       "pieChart2",
-      "Actual Coal Dispatch ",
+      "Actual Coal Dispatch",
       ["Rail", "Road"],
-      [data.dispatch_Rail_Actual, data.dispatch_Road_Actual],
-      ["rgb(66, 133, 244)", "rgb(234, 67, 53)"]
+      [data.dispatch_Rail_Actual || 0, data.dispatch_Road_Actual || 0],
+      ["#4285f4", "#ea4335"]
     );
+
+    renderPieChart(
+      "pieChart4",
+      "Overburden Excavator",
+      ["Solid", "Rehandling"],
+      [
+        data.overburden_Shovel_Solidquantity || 0,
+        data.overburden_Shovel_Rehandalingquantity || 0,
+      ],
+      ["#ffcd56", "#ff6384"]
+    );
+
+    renderPieChart(
+      "pieChart7",
+      "Overburden Tripper",
+      ["Solid", "Rehandling"],
+      [
+        data.overburden_Tripper_Soilquantity || 0,
+        data.overburden_Tripper_Rehanquantity || 0,
+      ],
+      ["#34a853", "#ff6384"]
+    );
+
+    // ---------- BAR CHARTS ----------
 
     renderBarChart(
       "barChart3",
@@ -83,28 +93,21 @@ export async function renderCharts() {
       [
         {
           label: "Rail",
-          data: [data.dispatch_Rail_Target, data.dispatch_Rail_Actual],
-          backgroundColor: "rgba(66, 133, 244, 1)",
-          borderColor: "rgba(66, 133, 244, 1)",
+          data: [
+            data.dispatch_Rail_Target || 0,
+            data.dispatch_Rail_Actual || 0,
+          ],
+          backgroundColor: "#4285f4",
         },
         {
           label: "Road",
-          data: [data.dispatch_Road_Target, data.dispatch_Road_Actual],
-          backgroundColor: "rgba(234, 67, 53, 1)",
-          borderColor: "rgba(234, 67, 53, 1)",
+          data: [
+            data.dispatch_Road_Target || 0,
+            data.dispatch_Road_Actual || 0,
+          ],
+          backgroundColor: "#ea4335",
         },
       ]
-    );
-
-    renderPieChart(
-      "pieChart4",
-      "Overburden Excavator",
-      ["Solid", "Rehandling"],
-      [
-        data.overburden_Shovel_Solidquantity,
-        data.overburden_Shovel_Rehandalingquantity,
-      ],
-      ["rgb(255, 205, 86)", "rgb(255, 99, 132)"]
     );
 
     renderBarChart(
@@ -113,139 +116,126 @@ export async function renderCharts() {
       ["Overburden Drill", "Coal Mining Drill"],
       [
         {
-          label: "N. Shot holes",
+          label: "No. Shot Holes",
           data: [
-            data.overburden_Drill_Noofshotholesdrilled,
-            data.coal_Drill_Noofshotholesdrilled,
+            data.overburden_Drill_Noofshotholesdrilled || 0,
+            data.coal_Drill_Noofshotholesdrilled || 0,
           ],
-          backgroundColor: "yellow",
+          backgroundColor: "#ffcd56",
         },
         {
           label: "Drill Meters",
           data: [
-            data.overburden_Drill_Drillingmeter,
-            data.coal_Drill_Drillingmeter,
+            data.overburden_Drill_Drillingmeter || 0,
+            data.coal_Drill_Drillingmeter || 0,
           ],
-          backgroundColor: "green",
+          backgroundColor: "#34a853",
         },
         {
           label: "Total",
-          data: [data.overburden_Drill_Total, data.coal_Drill_Total],
-          backgroundColor: "orange",
+          data: [
+            data.overburden_Drill_Total || 0,
+            data.coal_Drill_Total || 0,
+          ],
+          backgroundColor: "#ff9f40",
         },
       ]
     );
 
     renderBarChart(
       "barChart6",
-      "Explosives Metric",
-      ["Overburden Explosive", "Coal Mining Explosive"],
+      "Explosives Metrics",
+      ["Overburden", "Coal Mining"],
       [
         {
-          label: "N. holes Charged",
+          label: "Holes Charged",
           data: [
-            data.overburden_Explosives_Noholescharged,
-            data.coal_Explosives_Noholescharged,
+            data.overburden_Explosives_Noholescharged || 0,
+            data.coal_Explosives_Noholescharged || 0,
           ],
-          backgroundColor: "green",
+          backgroundColor: "#34a853",
         },
         {
-          label: "Explos Charged",
+          label: "Explosives Charged",
           data: [
-            data.overburden_Explosives_Explosivescharged,
-            data.coal_Explosives_Explosivescharged,
+            data.overburden_Explosives_Explosivescharged || 0,
+            data.coal_Explosives_Explosivescharged || 0,
           ],
-          backgroundColor: "blue",
+          backgroundColor: "#4285f4",
         },
         {
-          label: "N. holes Blasted",
+          label: "Holes Blasted",
           data: [
-            data.overburden_Explosives_NoholesBlasetedd,
-            data.coal_Explosives_NoholesBlasetedd,
+            data.overburden_Explosives_NoholesBlasetedd || 0,
+            data.coal_Explosives_NoholesBlasetedd || 0,
           ],
-          backgroundColor: "orange",
+          backgroundColor: "#ff9f40",
         },
         {
-          label: "Explos Blasted",
+          label: "Explosives Blasted",
           data: [
-            data.overburden_Explosives_Explosiveblasted,
-            data.coal_Explosives_Explosiveblasted,
+            data.overburden_Explosives_Explosiveblasted || 0,
+            data.coal_Explosives_Explosiveblasted || 0,
           ],
-          backgroundColor: "red",
+          backgroundColor: "#ea4335",
         },
       ]
     );
-
-    renderPieChart(
-      "pieChart7",
-      "Overburden Tripper",
-      ["Solid", "Rehandling"],
-      [
-        data.overburden_Tripper_Soilquantity,
-        data.overburden_Tripper_Rehanquantity,
-      ],
-      ["rgb(52, 168, 83)", "rgb(255, 99, 132)"]
-    );
-  } catch (error) {
-    console.error("Error fetching document:", error);
+  } catch (err) {
+    console.error("Chart rendering failed:", err);
   }
 }
 
-// Helper function to format the current date for Firebase document ID
+// ---------------- HELPERS ----------------
+
 function getFormattedDate() {
-  const today = new Date();
-  const day = today.getDate().toString().padStart(2, "0");
-  const month = (today.getMonth() + 1).toString().padStart(2, "0");
-  const year = today.getFullYear();
-  return `${day}${month}${year}M`;
+  const d = new Date();
+  return (
+    String(d.getDate()).padStart(2, "0") +
+    String(d.getMonth() + 1).padStart(2, "0") +
+    d.getFullYear() +
+    "M"
+  );
 }
 
-// Chart rendering functions
-function renderPieChart(canvasId, title, labels, data, backgroundColors) {
-  const ctx = document.getElementById(canvasId).getContext("2d");
-  new Chart(ctx, {
+function setText(id, value) {
+  const el = document.getElementById(id);
+  if (el) el.innerText = value ?? 0;
+}
+
+function renderPieChart(id, title, labels, data, colors) {
+  const canvas = document.getElementById(id);
+  if (!canvas) return;
+
+  new Chart(canvas.getContext("2d"), {
     type: "pie",
     data: {
       labels,
-      datasets: [
-        {
-          data,
-          backgroundColor: backgroundColors,
-          hoverOffset: 4,
-        },
-      ],
+      datasets: [{ data, backgroundColor: colors }],
     },
     options: {
       responsive: true,
       plugins: {
-        title: {
-          display: true,
-          text: title,
-          font: { size: 20, weight: "bold" },
-        },
-        legend: { position: "top" },
+        title: { display: true, text: title },
       },
     },
   });
 }
 
-function renderBarChart(canvasId, title, labels, datasets) {
-  const ctx = document.getElementById(canvasId).getContext("2d");
-  new Chart(ctx, {
+function renderBarChart(id, title, labels, datasets) {
+  const canvas = document.getElementById(id);
+  if (!canvas) return;
+
+  new Chart(canvas.getContext("2d"), {
     type: "bar",
     data: { labels, datasets },
     options: {
       responsive: true,
-      plugins: {
-        title: {
-          display: true,
-          text: title,
-          font: { size: 20, weight: "bold" },
-        },
-        legend: { position: "top" },
-      },
       scales: {
         y: { beginAtZero: true },
+      },
+      plugins: {
+        title: { display: true, text: title },
       },
     },
   });
