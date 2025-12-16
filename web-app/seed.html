@@ -1,183 +1,303 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Black Gold Shift – Firestore Seeder</title>
+<head>
+  <meta charset="utf-8" />
+  <title>Black Gold Shift – FULL Seeder (mapped keys)</title>
+  <style>
+    body { background:#0b0b0b; color:#f5c400; font-family:"Segoe UI", Tahoma, sans-serif;
+      display:flex; align-items:center; justify-content:center; height:100vh; }
+    .container { background:#111; border:2px solid #f5c400; padding:24px 28px; width:700px;
+      box-shadow:0 0 24px rgba(245,196,0,0.18); }
+    h1{margin-top:0;text-align:center;font-size:22px;}
+    p{font-size:13px;color:#ccc;text-align:center;margin-bottom:12px;}
+    button{width:100%; padding:14px; background:#f5c400; color:#000; font-size:15px; font-weight:700; border:none; cursor:pointer;}
+    button:hover{background:#ffd84d;}
+    pre{background:#000;color:#00ff9c;padding:12px;margin-top:16px;height:240px;overflow-y:auto;font-size:12px;border:1px solid #333;}
+    .footer{margin-top:12px;font-size:11px;text-align:center;color:#777;}
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>⚒️ BLACK GOLD SHIFT — FULL SEEDER (Mapped Keys)</h1>
+    <p>Seeds Firestore with full shift document including table rows + flat keys expected by PDF template.</p>
 
-    <style>
-      body {
-        background: #0b0b0b;
-        color: #f5c400;
-        font-family: "Segoe UI", Tahoma, sans-serif;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        height: 100vh;
-      }
+    <button id="seedBtn">SEED FULL SHIFT DOCUMENT</button>
 
-      .container {
-        background: #111;
-        border: 2px solid #f5c400;
-        padding: 24px 32px;
-        width: 520px;
-        box-shadow: 0 0 20px rgba(245, 196, 0, 0.25);
-      }
+    <pre id="log">Waiting for action...</pre>
 
-      h1 {
-        margin-top: 0;
-        text-align: center;
-        font-size: 22px;
-        letter-spacing: 1px;
-      }
+    <div class="footer">Heavy-duty data • Demo ready • Template-compatible</div>
+  </div>
 
-      p {
-        font-size: 14px;
-        color: #ccc;
-        text-align: center;
-        margin-bottom: 20px;
-      }
+  <script type="module">
+    import { db } from "./firebase/firebase.js";
+    import { doc, setDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
-      button {
-        width: 100%;
-        padding: 14px;
-        background: #f5c400;
-        color: #000;
-        font-size: 16px;
-        font-weight: bold;
-        border: none;
-        cursor: pointer;
-        letter-spacing: 1px;
-      }
+    const logEl = document.getElementById('log');
+    function logMsg(s){ logEl.textContent += '\n' + s; logEl.scrollTop = logEl.scrollHeight; }
 
-      button:hover {
-        background: #ffd84d;
-      }
+    function makeId(d = new Date()){
+      const day = String(d.getDate()).padStart(2,'0');
+      const mon = String(d.getMonth()+1).padStart(2,'0');
+      const yr = d.getFullYear();
+      return `${day}${mon}${yr}M`;
+    }
 
-      pre {
-        background: #000;
-        color: #00ff9c;
-        padding: 12px;
-        margin-top: 20px;
-        height: 180px;
-        overflow-y: auto;
-        font-size: 12px;
-        border: 1px solid #333;
-      }
+    // The structured arrays + flat totals for charts
+    const fullShiftData = {
+      // ---- flat numeric fields for charts (unchanged)
+      washery_Cleancoal: 1200,
+      washery_Midding: 180,
+      washery_Rejected: 70,
+      washery_Slurry: 50,
+      washery_Rawcoal: 1500,
 
-      .footer {
-        margin-top: 12px;
-        font-size: 11px;
-        text-align: center;
-        color: #777;
-      }
-    </style>
-  </head>
+      dispatch_Rail_Target: 500,
+      dispatch_Rail_Actual: 420,
+      dispatch_Road_Target: 350,
+      dispatch_Road_Actual: 310,
 
-  <body>
-    <div class="container">
-      <h1>⚒️ BLACK GOLD SHIFT SEEDER</h1>
-      <p>
-        Seeds Firestore with realistic coal mining shift data.<br />
-        Use once per environment.
-      </p>
+      overburden_Shovel_Solidquantity: 1100,
+      overburden_Shovel_Rehandalingquantity: 160,
 
-      <button id="seedBtn">SEED SHIFT LOG DATA</button>
+      overburden_Drill_Noofshotholesdrilled: 42,
+      coal_Drill_Noofshotholesdrilled: 34,
+      overburden_Drill_Drillingmeter: 128,
+      coal_Drill_Drillingmeter: 96,
+      overburden_Drill_Total: 220,
+      coal_Drill_Total: 165,
 
-      <pre id="log">Waiting for action...</pre>
+      overburden_Explosives_Noholescharged: 52,
+      coal_Explosives_Noholescharged: 44,
+      overburden_Explosives_Explosivescharged: 520,
+      coal_Explosives_Explosivescharged: 410,
+      overburden_Explosives_NoholesBlasetedd: 48,
+      coal_Explosives_NoholesBlasetedd: 39,
+      overburden_Explosives_Explosiveblasted: 495,
+      coal_Explosives_Explosiveblasted: 380,
 
-      <div class="footer">
-        Heavy-duty data • Hackathon revival • Demo ready
-      </div>
-    </div>
+      overburden_Tripper_Soilquantity: 900,
+      overburden_Tripper_Rehanquantity: 130,
 
-    <script type="module">
-      import { db } from "./firebase/firebase.js";
-      import {
-        doc,
-        setDoc,
-      } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+      coal_Surfaceminer_Minerno: 3
+    };
 
-      const log = document.getElementById("log");
-
-      function logMsg(msg) {
-        log.textContent += `\n${msg}`;
-        log.scrollTop = log.scrollHeight;
-      }
-
-      function makeId(date = new Date()) {
-        const d = String(date.getDate()).padStart(2, "0");
-        const m = String(date.getMonth() + 1).padStart(2, "0");
-        const y = date.getFullYear();
-        return `${d}${m}${y}M`;
-      }
-
-      const shiftData = {
-        // Washery
-        washery_Cleancoal: 1200,
-        washery_Midding: 180,
-        washery_Rejected: 70,
-        washery_Slurry: 50,
-        washery_Rawcoal: 1500,
-
-        // Dispatch
-        dispatch_Rail_Target: 500,
-        dispatch_Rail_Actual: 420,
-        dispatch_Road_Target: 350,
-        dispatch_Road_Actual: 310,
-
-        // Overburden – Shovel
-        overburden_Shovel_Solidquantity: 1100,
-        overburden_Shovel_Rehandalingquantity: 160,
-
-        // Drill
-        overburden_Drill_Noofshotholesdrilled: 42,
-        coal_Drill_Noofshotholesdrilled: 34,
-        overburden_Drill_Drillingmeter: 128,
-        coal_Drill_Drillingmeter: 96,
-        overburden_Drill_Total: 220,
-        coal_Drill_Total: 165,
-
-        // Explosives
-        overburden_Explosives_Noholescharged: 52,
-        coal_Explosives_Noholescharged: 44,
-        overburden_Explosives_Explosivescharged: 520,
-        coal_Explosives_Explosivescharged: 410,
-        overburden_Explosives_NoholesBlasetedd: 48,
-        coal_Explosives_NoholesBlasetedd: 39,
-        overburden_Explosives_Explosiveblasted: 495,
-        coal_Explosives_Explosiveblasted: 380,
-
-        // Tripper
-        overburden_Tripper_Soilquantity: 900,
-        overburden_Tripper_Rehanquantity: 130,
-      };
-
-      document.getElementById("seedBtn").onclick = async () => {
-        log.textContent = "⛏️ Starting seeding process...";
-
-        const today = new Date();
-        const yesterday = new Date();
-        yesterday.setDate(today.getDate() - 1);
-
-        const ids = [
-          makeId(today),
-          makeId(yesterday),
-          "15062025M", // sample historical shift
-        ];
-
-        for (const id of ids) {
-          try {
-            await setDoc(doc(db, "ShiftLog", id), shiftData);
-            logMsg(`✅ Seeded ShiftLog / ${id}`);
-          } catch (err) {
-            logMsg(`❌ Failed ${id}: ${err.message}`);
-            console.error(err);
-          }
+    // Structured arrays for PDF rows (first element will be mapped to flat keys)
+    const arrays = {
+      overburden_excavator: [
+        { si: 1, no: 'EX-01', benchNo: 'B1', qbSolid: 1100, rehandling: 160, total: 1260 }
+      ],
+      overburden_tipper: [
+        { si: 1, no: 'TP-01', benchNo: 'B1', dumperFactor: 1.1, trips: 120, qbSolid: 900, rehandling:130, total:1030 }
+      ],
+      overburden_drilling: [
+        { si: 1, no:'OD-01', benchNo:'B1', nShotHoles:42, drillMeters:128, total:220 }
+      ],
+      overburden_explosives: [
+        { si:1, bench:'B1', nHolesCharged:52, nHolesBlasted:48, explosCharged_t:520, explosBlasted_t:495 }
+      ],
+      coal_excavator: [
+        { si:1, no:'CE-01', nameNo:'EXC-A', benchNo:'CB1', coalQty_excavated_te:0 }
+      ],
+      coal_tipper: [
+        {
+          si:1, nameNo:'TP-C1', benchNo:'CB1', dumperFactor:1.2,
+          without: { trips:60, coalQty_T:900 },
+          with: { trips:58, coalQty_T:880 }
         }
+      ],
+      coal_drilling: [
+        { si:1, no:'CD-01', benchNo:'CB1', nShotHoles:34, drillMeters:96, total:165 }
+      ],
+      coal_explosives: [
+        { si:1, bench:'CB1', nHolesCharged:44, nHolesBlasted:39, explosCharged_t:410, explosBlasted_t:380 }
+      ],
+      surface_miners: [
+        { si:1, no:'01', benchNo:'SMB1', coalQty_cut_000te:150 }
+      ],
+      washery_rows: [
+        {
+          raw_coal_feed_tonnes:1500,
+          clean_coal_000te:1200,
+          middling_000te:180,
+          rejects_000te:70,
+          slurry_000te:50,
+          cleanCoalPercent:80,
+          middlingPercent:12,
+          slurryPercent:(50/1500)*100,
+          rejectedPercent:(70/1500)*100
+        }
+      ],
+      dispatch_rows: [
+        { mode:'Rail', grade:'A', target:500, actual:420 },
+        { mode:'Road', grade:'B', target:350, actual:310 }
+      ]
+    };
 
-        logMsg("\n🔥 Seeding complete. Dashboard ready.");
-        alert("Shift data seeded successfully!");
-      };
-    </script>
-  </body>
+    // Function: map first row fields into the exact flat keys the Handlebars template expects
+    function mapArraysToFlat(obj, arrs) {
+      // Overburden Excavator -> template expects: overburden_Shovel_SIno, overburden_Shovel_Shovelno, overburden_Shovel_Benchno, overburden_Shovel_Solidquantity, overburden_Shovel_Rehandalingquantity, overburden_Shovel_Totalquantity
+      const oe = arrs.overburden_excavator && arrs.overburden_excavator[0];
+      if (oe) {
+        obj.overburden_Shovel_SIno = oe.si ?? "";
+        obj.overburden_Shovel_Shovelno = oe.no ?? "";
+        obj.overburden_Shovel_Benchno = oe.benchNo ?? "";
+        obj.overburden_Shovel_Solidquantity = oe.qbSolid ?? obj.overburden_Shovel_Solidquantity ?? 0;
+        obj.overburden_Shovel_Rehandalingquantity = oe.rehandling ?? obj.overburden_Shovel_Rehandalingquantity ?? 0;
+        obj.overburden_Shovel_Totalquantity = oe.total ?? ( (oe.qbSolid||0) + (oe.rehandling||0) );
+      }
+
+      // Overburden tipper -> template expects: overburden_Tripper_SIno, overburden_Tripper_Tripperno, overburden_Tripper_Benchno, overburden_Tripper_Dumperfac, overburden_Tripper_Tripsno, overburden_Tripper_Soilquantity, overburden_Tripper_Rehanquantity, overburden_Tripper_Totalquantity
+      const ot = arrs.overburden_tipper && arrs.overburden_tipper[0];
+      if (ot) {
+        obj.overburden_Tripper_SIno = ot.si ?? "";
+        obj.overburden_Tripper_Tripperno = ot.no ?? "";
+        obj.overburden_Tripper_Benchno = ot.benchNo ?? "";
+        obj.overburden_Tripper_Dumperfac = ot.dumperFactor ?? ot.dumperFactor ?? "";
+        obj.overburden_Tripper_Tripsno = ot.trips ?? "";
+        obj.overburden_Tripper_Soilquantity = ot.qbSolid ?? obj.overburden_Tripper_Soilquantity ?? 0;
+        obj.overburden_Tripper_Rehanquantity = ot.rehandling ?? obj.overburden_Tripper_Rehanquantity ?? 0;
+        obj.overburden_Tripper_Totalquantity = ot.total ?? ( (ot.qbSolid||0) + (ot.rehandling||0) );
+      }
+
+      // Overburden drilling -> template uses overburden_Drill_Serialno, overburden_Drill_Drillno, overburden_Drill_Benchno, overburden_Drill_Noofshotholesdrilled, overburden_Drill_Drillingmeter, overburden_Drill_Total
+      const od = arrs.overburden_drilling && arrs.overburden_drilling[0];
+      if (od) {
+        obj.overburden_Drill_Serialno = od.si ?? "";
+        obj.overburden_Drill_Drillno = od.no ?? "";
+        obj.overburden_Drill_Benchno = od.benchNo ?? "";
+        obj.overburden_Drill_Noofshotholesdrilled = od.nShotHoles ?? obj.overburden_Drill_Noofshotholesdrilled ?? 0;
+        obj.overburden_Drill_Drillingmeter = od.drillMeters ?? obj.overburden_Drill_Drillingmeter ?? 0;
+        obj.overburden_Drill_Total = od.total ?? obj.overburden_Drill_Total ?? 0;
+      }
+
+      // Overburden explosives -> template keys: overburden_Explosives_SIno, overburden_Explosives_Benchno, overburden_Explosives_Noholescharged, overburden_Explosives_NoholesBlasetedd, overburden_Explosives_Explosivescharged, overburden_Explosives_Explosiveblasted
+      const oepl = arrs.overburden_explosives && arrs.overburden_explosives[0];
+      if (oepl) {
+        obj.overburden_Explosives_SIno = oepl.si ?? "";
+        obj.overburden_Explosives_Benchno = oepl.bench ?? "";
+        obj.overburden_Explosives_Noholescharged = oepl.nHolesCharged ?? obj.overburden_Explosives_Noholescharged ?? 0;
+        obj.overburden_Explosives_NoholesBlasetedd = oepl.nHolesBlasted ?? obj.overburden_Explosives_NoholesBlasetedd ?? 0;
+        obj.overburden_Explosives_Explosivescharged = oepl.explosCharged_t ?? obj.overburden_Explosives_Explosivescharged ?? 0;
+        obj.overburden_Explosives_Explosiveblasted = oepl.explosBlasted_t ?? obj.overburden_Explosives_Explosiveblasted ?? 0;
+      }
+
+      // Coal Excavator -> template: coal_Shovel_Serialno, coal_Shovel_Shovelno, coal_Shovel_Benchno, coal_Shovel_Coalquantity
+      const ce = arrs.coal_excavator && arrs.coal_excavator[0];
+      if (ce) {
+        obj.coal_Shovel_Serialno = ce.si ?? "";
+        obj.coal_Shovel_Shovelno = ce.no ?? ce.nameNo ?? "";
+        obj.coal_Shovel_Benchno = ce.benchNo ?? "";
+        obj.coal_Shovel_Coalquantity = ce.coalQty_excavated_te ?? 0;
+      }
+
+      // Coal Tipper -> many template keys (notice template typos; we match them exactly)
+      const ct = arrs.coal_tipper && arrs.coal_tipper[0];
+      if (ct) {
+        obj.coal_Tripper_Serialno = ct.si ?? "";
+        obj.coal_Tripper_Tripperno = ct.nameNo ?? "";
+        obj.coal_Tripper_Benchno = ct.benchNo ?? "";
+        obj.coal_Tripper_Dumperfactor = ct.dumperFactor ?? "";
+        // template expects:
+        // coal_Tripper_Tripsnowithoutwieghts
+        // coal_Tripper_CoalQuantitywithoutweights
+        // coal_Tripper_Tripsnowithweights
+        // coal_Tripper_CoalQuantitywithweights
+        obj.coal_Tripper_Tripsnowithoutwieghts = ct.without?.trips ?? ct.without?.Trips ?? "";
+        obj.coal_Tripper_CoalQuantitywithoutweights = ct.without?.coalQty_T ?? "";
+        obj.coal_Tripper_Tripsnowithweights = ct.with?.trips ?? ct.with?.Trips ?? "";
+        obj.coal_Tripper_CoalQuantitywithweights = ct.with?.coalQty_T ?? "";
+      }
+
+      // Coal drilling keys
+      const cd = arrs.coal_drilling && arrs.coal_drilling[0];
+      if (cd) {
+        obj.coal_Drill_Serialno = cd.si ?? "";
+        obj.coal_Drill_Drillno = cd.no ?? "";
+        obj.coal_Drill_Benchno = cd.benchNo ?? "";
+        obj.coal_Drill_Noofshotholesdrilled = cd.nShotHoles ?? obj.coal_Drill_Noofshotholesdrilled ?? 0;
+        obj.coal_Drill_Drillingmeter = cd.drillMeters ?? obj.coal_Drill_Drillingmeter ?? 0;
+        obj.coal_Drill_Total = cd.total ?? obj.coal_Drill_Total ?? 0;
+      }
+
+      // Coal explosives keys
+      const cepl = arrs.coal_explosives && arrs.coal_explosives[0];
+      if (cepl) {
+        obj.coal_Explosives_SIno = cepl.si ?? "";
+        obj.coal_Explosives_Benchno = cepl.bench ?? "";
+        obj.coal_Explosives_Noholescharged = cepl.nHolesCharged ?? obj.coal_Explosives_Noholescharged ?? 0;
+        obj.coal_Explosives_NoholesBlasetedd = cepl.nHolesBlasted ?? obj.coal_Explosives_NoholesBlasetedd ?? 0;
+        obj.coal_Explosives_Explosivescharged = cepl.explosCharged_t ?? obj.coal_Explosives_Explosivescharged ?? 0;
+        obj.coal_Explosives_Explosiveblasted = cepl.explosBlasted_t ?? obj.coal_Explosives_Explosiveblasted ?? 0;
+      }
+
+      // Surface miners flat keys
+      const sm = arrs.surface_miners && arrs.surface_miners[0];
+      if (sm) {
+        obj.coal_Surfaceminer_Serialno = sm.si ?? "";
+        obj.coal_Surfaceminer_Minerno = sm.no ?? sm.nameNo ?? "";
+        obj.coal_Surfaceminer_Benchno = sm.benchNo ?? "";
+        obj.coal_Surfaceminer_Coalquantity = sm.coalQty_cut_000te ?? 0;
+      }
+
+      // Washery and dispatch: map first washery row and dispatch_rows first elements
+      const wr = arrs.washery_rows && arrs.washery_rows[0];
+      if (wr) {
+        obj.washery_Rawcoal = wr.raw_coal_feed_tonnes ?? obj.washery_Rawcoal ?? 0;
+        obj.washery_Cleancoal = wr.clean_coal_000te ?? obj.washery_Cleancoal ?? 0;
+        obj.washery_Midding = wr.middling_000te ?? obj.washery_Midding ?? 0;
+        obj.washery_Rejected = wr.rejects_000te ?? obj.washery_Rejected ?? 0;
+        obj.washery_Slurry = wr.slurry_000te ?? obj.washery_Slurry ?? 0;
+        obj.cleanCoalPercent = wr.cleanCoalPercent ?? obj.cleanCoalPercent ?? 0;
+        obj.middlingPercent = wr.middlingPercent ?? obj.middlingPercent ?? 0;
+        obj.slurryPercent = wr.slurryPercent ?? obj.slurryPercent ?? 0;
+        obj.rejectedPercent = wr.rejectedPercent ?? obj.rejectedPercent ?? 0;
+      }
+
+      // Dispatch rows: map first two as Rail and Road if available
+      if (Array.isArray(arrs.dispatch_rows)) {
+        const rail = arrs.dispatch_rows[0];
+        const road = arrs.dispatch_rows[1];
+        if (rail) {
+          obj.dispatch_Rail_Grade = rail.grade ?? "";
+          obj.dispatch_Rail_Target = rail.target ?? obj.dispatch_Rail_Target ?? 0;
+          obj.dispatch_Rail_Actual = rail.actual ?? obj.dispatch_Rail_Actual ?? 0;
+        }
+        if (road) {
+          obj.dispatch_Road_Grade = road.grade ?? "";
+          obj.dispatch_Road_Target = road.target ?? obj.dispatch_Road_Target ?? 0;
+          obj.dispatch_Road_Actual = road.actual ?? obj.dispatch_Road_Actual ?? 0;
+        }
+      }
+
+      return obj;
+    }
+
+    document.getElementById('seedBtn').onclick = async () => {
+      logEl.textContent = "Starting full seeding process (mapping to template keys)...";
+
+      // Build the doc object by merging flat fields and arrays
+      const docObj = { ...fullShiftData, ...arrays };
+
+      // Map arrays' first elements into flat keys the template expects
+      mapArraysToFlat(docObj, arrays);
+
+      const today = new Date();
+      const yesterday = new Date(); yesterday.setDate(today.getDate() - 1);
+      const ids = [ makeId(today), makeId(yesterday), "15062025M" ];
+
+      for (const id of ids) {
+        try {
+          await setDoc(doc(db, 'ShiftLog', id), docObj);
+          logMsg(`Seeded document: ${id}`);
+        } catch (err) {
+          logMsg(`Failed ${id}: ${err.message}`);
+          console.error(err);
+        }
+      }
+
+      logMsg("Full seeding complete. Now go to the app, click 'Generate Log' and then 'Generate PDF'.");
+      alert("Seeding complete — documents added to ShiftLog.");
+    };
+  </script>
+</body>
 </html>
