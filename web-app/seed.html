@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Black Gold Shift – Firestore Seeder</title>
+
+    <style>
+      body {
+        background: #0b0b0b;
+        color: #f5c400;
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+      }
+
+      .container {
+        background: #111;
+        border: 2px solid #f5c400;
+        padding: 24px 32px;
+        width: 520px;
+        box-shadow: 0 0 20px rgba(245, 196, 0, 0.25);
+      }
+
+      h1 {
+        margin-top: 0;
+        text-align: center;
+        font-size: 22px;
+        letter-spacing: 1px;
+      }
+
+      p {
+        font-size: 14px;
+        color: #ccc;
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      button {
+        width: 100%;
+        padding: 14px;
+        background: #f5c400;
+        color: #000;
+        font-size: 16px;
+        font-weight: bold;
+        border: none;
+        cursor: pointer;
+        letter-spacing: 1px;
+      }
+
+      button:hover {
+        background: #ffd84d;
+      }
+
+      pre {
+        background: #000;
+        color: #00ff9c;
+        padding: 12px;
+        margin-top: 20px;
+        height: 180px;
+        overflow-y: auto;
+        font-size: 12px;
+        border: 1px solid #333;
+      }
+
+      .footer {
+        margin-top: 12px;
+        font-size: 11px;
+        text-align: center;
+        color: #777;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>⚒️ BLACK GOLD SHIFT SEEDER</h1>
+      <p>
+        Seeds Firestore with realistic coal mining shift data.<br />
+        Use once per environment.
+      </p>
+
+      <button id="seedBtn">SEED SHIFT LOG DATA</button>
+
+      <pre id="log">Waiting for action...</pre>
+
+      <div class="footer">
+        Heavy-duty data • Hackathon revival • Demo ready
+      </div>
+    </div>
+
+    <script type="module">
+      import { db } from "./firebase/firebase.js";
+      import {
+        doc,
+        setDoc,
+      } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+      const log = document.getElementById("log");
+
+      function logMsg(msg) {
+        log.textContent += `\n${msg}`;
+        log.scrollTop = log.scrollHeight;
+      }
+
+      function makeId(date = new Date()) {
+        const d = String(date.getDate()).padStart(2, "0");
+        const m = String(date.getMonth() + 1).padStart(2, "0");
+        const y = date.getFullYear();
+        return `${d}${m}${y}M`;
+      }
+
+      const shiftData = {
+        // Washery
+        washery_Cleancoal: 1200,
+        washery_Midding: 180,
+        washery_Rejected: 70,
+        washery_Slurry: 50,
+        washery_Rawcoal: 1500,
+
+        // Dispatch
+        dispatch_Rail_Target: 500,
+        dispatch_Rail_Actual: 420,
+        dispatch_Road_Target: 350,
+        dispatch_Road_Actual: 310,
+
+        // Overburden – Shovel
+        overburden_Shovel_Solidquantity: 1100,
+        overburden_Shovel_Rehandalingquantity: 160,
+
+        // Drill
+        overburden_Drill_Noofshotholesdrilled: 42,
+        coal_Drill_Noofshotholesdrilled: 34,
+        overburden_Drill_Drillingmeter: 128,
+        coal_Drill_Drillingmeter: 96,
+        overburden_Drill_Total: 220,
+        coal_Drill_Total: 165,
+
+        // Explosives
+        overburden_Explosives_Noholescharged: 52,
+        coal_Explosives_Noholescharged: 44,
+        overburden_Explosives_Explosivescharged: 520,
+        coal_Explosives_Explosivescharged: 410,
+        overburden_Explosives_NoholesBlasetedd: 48,
+        coal_Explosives_NoholesBlasetedd: 39,
+        overburden_Explosives_Explosiveblasted: 495,
+        coal_Explosives_Explosiveblasted: 380,
+
+        // Tripper
+        overburden_Tripper_Soilquantity: 900,
+        overburden_Tripper_Rehanquantity: 130,
+      };
+
+      document.getElementById("seedBtn").onclick = async () => {
+        log.textContent = "⛏️ Starting seeding process...";
+
+        const today = new Date();
+        const yesterday = new Date();
+        yesterday.setDate(today.getDate() - 1);
+
+        const ids = [
+          makeId(today),
+          makeId(yesterday),
+          "15062025M", // sample historical shift
+        ];
+
+        for (const id of ids) {
+          try {
+            await setDoc(doc(db, "ShiftLog", id), shiftData);
+            logMsg(`✅ Seeded ShiftLog / ${id}`);
+          } catch (err) {
+            logMsg(`❌ Failed ${id}: ${err.message}`);
+            console.error(err);
+          }
+        }
+
+        logMsg("\n🔥 Seeding complete. Dashboard ready.");
+        alert("Shift data seeded successfully!");
+      };
+    </script>
+  </body>
+</html>
