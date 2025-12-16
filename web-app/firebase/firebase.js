@@ -1,5 +1,9 @@
 // firebase.js  (CDN ESM — static site)
-// Put this at project root (same folder as your html files) and update the firebaseConfig with your new keys.
+/**
+ * Firebase Web SDK configuration
+ * These keys are intentionally public as this is a client-side application.
+ * Security is enforced using Firebase Authentication and Firestore rules.
+ */
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAuth } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
@@ -14,14 +18,18 @@ const firebaseConfig = {
   storageBucket: "black-gold-shift.firebasestorage.app",
   messagingSenderId: "1075088195518",
   appId: "1:1075088195518:web:e1b8f5ebc4cfffb88043ef",
-  measurementId: "G-4ZSTES71WK"
+  measurementId: "G-4ZSTES71WK",
 };
 
 const app = initializeApp(firebaseConfig);
 
 // optional analytics (only works in browser environments)
 let analytics;
-try { analytics = getAnalytics(app); } catch (e) { /* analytics may fail in some contexts — safe to ignore */ }
+try {
+  analytics = getAnalytics(app);
+} catch (e) {
+  /* analytics may fail in some contexts — safe to ignore */
+}
 
 export const auth = getAuth(app);
 export const db = getFirestore(app);

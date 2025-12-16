@@ -1,7 +1,9 @@
 // Dashboard_page2.js (top)
 import { db } from "../firebase/firebase.js";
-import { doc, getDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-
+import {
+  doc,
+  getDoc,
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 // Function to format the current date
 const getFormattedDate = () => {

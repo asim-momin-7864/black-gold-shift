@@ -133,10 +133,7 @@ export async function renderCharts() {
         },
         {
           label: "Total",
-          data: [
-            data.overburden_Drill_Total || 0,
-            data.coal_Drill_Total || 0,
-          ],
+          data: [data.overburden_Drill_Total || 0, data.coal_Drill_Total || 0],
           backgroundColor: "#ff9f40",
         },
       ]

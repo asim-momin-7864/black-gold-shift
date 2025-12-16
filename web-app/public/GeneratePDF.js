@@ -5,13 +5,11 @@
 // is currently DISABLED (commented) because Firebase Storage
 // is no longer available on the free plan for this project.
 
-
 // The code below generates the PDF (jsPDF + html2canvas), saves locally,
 // and previously called uploadPDFToFirebase(...) to upload to Storage.
 // That upload call + upload function are retained but commented-out
 
-
-import { /* storage */ } from "../firebase/firebase.js"; // storage import kept but commented in usage
+import /* storage */ "../firebase/firebase.js"; // storage import kept but commented in usage
 // CDN Storage functions are left available (commented) in case of restore:
 import {
   ref,
@@ -92,11 +90,9 @@ document
       // That upload step is currently disabled because Firebase Storage
       // billing changed and we removed the free tier.
 
-
       // Informational log so reviewers understand the current behaviour:
       console.info(
         "PDF generated and saved locally. Cloud upload is DISABLED (commented) — see README for details."
       );
     });
   });
-
