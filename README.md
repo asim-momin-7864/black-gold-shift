@@ -1,221 +1,263 @@
-# Black Gold Shift — README
+# Black-Gold-Shift — Shift Management System for Coal Mines
 
-> **Short:** My first hackathon project (revived). A small frontend app for logging daily coal-mining shift data, visualizing it with charts, and exporting a shift log PDF.
-> Built with plain HTML/CSS/JS + Firebase (Firestore + Auth). I recently fixed it up so it runs again and added a simple seeder.
+> A beginner-friendly Android + Web project that digitizes shift handover logs, generates PDF handover reports, and improves safety & handover clarity for coal-mine operations.
 
-I’m a beginner — this repo is honest about that. I’ll show what I did, what’s working, and what I left disabled to keep the demo stable.
+![License](https://img.shields.io/badge/License-MIT-yellow.svg) ![Language](https://img.shields.io/badge/Language-Java-brightgreen.svg) ![Backend](https://img.shields.io/badge/Backend-Firebase-orange.svg)
 
 ---
 
 ## Table of contents
 
-* [Origin story](#origin-story)
-* [What it does (features)](#what-it-does-features)
-* [Quick start (run locally)](#quick-start-run-locally)
-* [Seeding test data](#seeding-test-data)
-* [Project structure (important files)](#project-structure-important-files)
-* [Data model (example document)](#data-model-example-document)
-* [What I changed in the revival](#what-i-changed-in-the-revival)
-* [Limitations & known issues](#limitations--known-issues)
-* [Security & credentials](#security--credentials)
-* [How to re-enable cloud upload (notes)](#how-to-re-enable-cloud-upload-notes)
-* [Screenshots / diagrams / gif (placeholders)](#screenshots--diagrams--gif-placeholders)
-* [If you want to help / next steps](#if-you-want-to-help--next-steps)
+* [About](#about)
+* [Features](#features)
+* [Screenshots](#screenshots)
+* [Architecture](#architecture)
+* [Files I inspected](#files-i-inspected)
+* [Getting started (Android)](#getting-started-android)
+* [Firebase setup](#firebase-setup)
+* [Build & run (CLI)](#build--run-cli)
+* [Project structure & important files](#project-structure--important-files)
+* [Tips for beginners](#tips-for-beginners)
+* [Contributing](#contributing)
 * [License](#license)
+* [Contact](#contact)
 
 ---
 
-## Origin story
+# About
 
-I built this during my first-ever hackathon with only HTML/CSS/JS knowledge. We used Firebase because it let us ship auth, database and file upload without a backend. The project won the hackathon for solving a real coal-mining shift reporting problem.
+Black-Gold-Shift is a simple mobile + web system for coal-mine shift handovers. Supervisors log shift activities (overburden, coal mined, drill, explosives, etc.), the data is stored centrally (Firebase), and the app can auto-generate PDF handover reports for the next shift and for managers / ERP integration.
 
-Two years later I revived it to make it demo-ready again. I fixed many bugs, consolidated Firebase initialization, added a seeder, and kept things simple — no backend, no production infra.
-
----
-
-## What it does (features)
-
-* Login / Signup (Firebase Auth)
-* Dashboard with charts visualizing daily shift metrics (Chart.js)
-* Generate a detailed shift log as a PDF (jsPDF + html2canvas) and download locally
-* Seeder page to populate demo Firestore documents (so charts and PDF show realistic data)
-* (Disabled) Cloud upload of PDFs — commented out with instructions to restore
+This project was developed as a PBL (Project Based Learning) and aligns with safety/operational goals described in the project synopsis. 
 
 ---
 
-## Quick start (run locally)
+# Features
 
-You only need a browser + static server.
-
-1. Clone the repo:
-
-   ```bash
-   git clone <repo-url>
-   cd black-gold-shift
-   ```
-
-2. Put your Firebase web config in `firebase.js` (project root). This is the single file that initializes Firebase.
-
-3. Serve files over HTTP (ES modules need this):
-
-   * Using Python 3:
-
-     ```bash
-     python -m http.server 8000
-     ```
-   * Or use VS Code Live Server.
-
-4. Open:
-
-   * Seeder: `http://localhost:8000/seed.html` → click **Seed Demo Data**
-   * App: `http://localhost:8000/index.html` → login → Dashboard → Analysis
+* Firebase Authentication (Email/password)
+* Create / Edit / View shift logs (Overburden, Coal Mined, Drill, Explosives, etc.)
+* Store structured logs in Firestore (and/or Realtime DB)
+* Auto-generate PDF handover reports (for offline viewing / audits)
+* Simple web dashboard for managers (optional)
+* DGMS-aware Safety Management Plan integration (SMP) and role-based access. 
 
 ---
 
-## Seeding test data
+# Screenshots
 
-Use `seed.html` to create demo documents in Firestore. Seeder writes both simple numeric fields (for charts) and structured rows (for PDF tables). The seeder creates:
+> **Note:** Add your screenshots in `screenshots/` (root). The README below references those filenames — add actual images with these names.
 
-* Today (DDMMYYYYM)
-* Yesterday
-* A sample historical ID
+Recommended filenames:
 
-This makes dashboard charts and PDF tables work without manual data entry.
-
----
-
-## Project structure (important files)
-
-* `index.html`, `login.html`, `sign_up.html` — UI pages
-* `firebase.js` — centralized Firebase initializer (update with your web config)
-* `chartConfig.js` — all chart rendering code (safe fallbacks included)
-* `Dashboard_page2.html` / `Dashboard_page2.js` — PDF / Handlebars template rendering
-* `GeneratePDF.js` — PDF generation and local download (cloud upload is commented)
-* `seed.html` — demo data seeder (black & yellow themed)
-* `firebase.json` — hosting config (if you want to deploy)
-
----
-
-## Data model (example document)
-
-One Firestore document is stored at `ShiftLog/{DDMMYYYYM}`. Example (shortened):
-
-```json
-{
-  "washery_Cleancoal": 1200,
-  "washery_Rawcoal": 1500,
-  "dispatch_Rail_Actual": 420,
-  "dispatch_Road_Actual": 310,
-  "overburden_Shovel_Solidquantity": 1100,
-  "overburden_excavator": [{ "si":1, "no":"EX-01", "benchNo":"B1", "qbSolid":1100, "rehandling":160, "total":1260 }],
-  "coal_tipper": [{ "si":1, "nameNo":"TP-C1", "benchNo":"CB1", "without": {"trips":60, "coalQty_T":900}, "with": {"trips":58, "coalQty_T":880}}]
-  // ...many more flat fields and arrays (see seed.html)
-}
+```
+screenshots/
+  01_login.png
+  02_date_shift.png
+  03_dashboard.png
+  04_explosive_info.png
+  05_coalmined.png
+  06_drill_info.png
+  07_architecture.png
+  08_flowchart.png
 ```
 
-Charts read the flat numeric fields. The PDF/Handlebars needs some flat keys (these are mapped from the arrays in the seeder so the PDF renders correctly).
-
----
-
-## What I changed in the revival
-
-* Consolidated all Firebase initialization into `firebase.js` (single source).
-* Fixed mixed/duplicate Firebase SDK imports and versions (CDN ESM v12.x).
-* Rewrote `chartConfig.js` to handle missing fields safely (`|| 0`) so charts don't crash.
-* Added a `seed.html` that writes both the flat fields and structured arrays, and maps array first-row values to the flat keys required by the PDF template.
-* Commented out the cloud-upload code in `GeneratePDF.js` instead of deleting it, with clear instructions to re-enable later.
-* Added notes/comments across files for future maintainers.
-
-I had help from a coding assistant while doing the revive. I used that help to debug and patch things quickly — the code and decisions are mine, but I’m being honest that I had guidance.
-
----
-
-## Limitations & known issues
-
-I kept this intentionally minimal. Things left as-is:
-
-* **UI is not responsive.** It was built as a desktop dashboard for the hackathon. Mobile/tablet views are not fully tested.
-* **PDF size can be large (MBs).** The PDF is created from an HTML snapshot (html2canvas) at higher scale for legibility; that makes file sizes bigger. You can reduce `scale` or lower image quality if you need smaller files.
-* **Cloud PDF upload is disabled.** The upload code is commented in `GeneratePDF.js` and documented. It was disabled because free Firebase Storage is no longer available for this project.
-* **No backend / server.** This is a static frontend project. If you want persistent public links for PDFs, you would need to add a server (S3 presigned URLs or an email service), which I chose not to do for this demo.
-* **Not all functions are line-by-line documented.** I understand the overall flow and can explain how major parts work, but I didn’t rewrite every function to be perfect — this was kept pragmatic.
-
----
-
-## Vulnerabilities & notes
-
-* The Firebase web config is in the repo by design (it’s a client-side API key). These keys do **not** give admin access. Security depends on Firestore / Storage rules.
-* I recommend **setting Firestore rules** appropriately if you deploy:
-
-  * For demo: allow read, deny public writes.
-  * For production: require auth and validate input.
-* If you add server-side code (AWS keys, SendGrid, service accounts), **do not** commit those secrets. Use `.env` and `.gitignore` and store secrets in CI/CD settings.
-
----
-
-## How to re-enable cloud upload (notes)
-
-If you or a future teammate want to restore the PDF upload to cloud storage:
-
-**Quick Firebase restore**
-
-1. Re-enable Firebase Storage in Firebase Console.
-2. Un-comment the `uploadPDFToFirebase()` function and its call in `GeneratePDF.js`. Ensure `firebase.js` exports `storage`.
-3. Optionally save the download URL to the ShiftLog doc for mobile app retrieval.
-
-**Better (recommended) long-term**
-
-* Replace upload with S3 presigned uploads or Cloudflare R2 + short presigned GET links. That needs a small serverless function (I can provide code if you want later).
-
-I commented the exact steps in `GeneratePDF.js`.
-
----
-
-## Screenshots / data flow diagram / gif (keep it simple)
-
-I’m not adding big videos — just small images and a tiny gif for the README. Add these files in the repo and reference them:
-
-* `screenshots/dashboard.png` — dashboard showing all charts (one clean desktop shot)
-* `screenshots/pdf-preview.png` — a screenshot of the generated PDF open in a viewer
-* `screenshots/seeder.png` — the seeder page (optional)
-* `diagrams/data-flow.png` — simple diagram (client → Firestore → PDF generation)
-* `gifs/generate-pdf.gif` — short gif showing "Generate Log" → "Download PDF"
-
-You can create the gif with a simple screen recorder (like ShareX or the built-in OS recorder) and add it to `gifs/`. In the README you can embed images like:
+Embed these in README (example):
 
 ```md
-![Dashboard screenshot](screenshots/dashboard.png)
-![PDF preview](screenshots/pdf-preview.png)
-![Data flow](diagrams/data-flow.png)
+## Screenshots
 
-![Generate PDF gif](gifs/generate-pdf.gif)
+![Login](screenshots/01_login.png)
+![Date & Shift](screenshots/02_date_shift.png)
+
+![Dashboard](screenshots/03_dashboard.png)
+![Explosive Info](screenshots/04_explosive_info.png)
+
+![CoalMined](screenshots/05_coalmined.png)
+![Drill Info](screenshots/06_drill_info.png)
 ```
 
-(Keep images small and cropped; one dashboard shot + one PDF shot + one small gif is enough.)
+---
+
+# Architecture
+
+High-level architecture uses Firebase as the central backend:
+
+* Firebase Auth for login
+* Firestore / Realtime DB for storing logs
+* Cloud Functions (optional) to create PDFs / server logic
+* Hosting for the web dashboard / ERP connectors
+
+Place the architecture & flowchart images in `screenshots/` and include them here:
+
+```md
+## Architecture
+
+![Architecture](screenshots/07_architecture.png)
+![Flowchart](screenshots/08_flowchart.png)
+```
 
 ---
 
-## If you want to help / next steps
+# Files I inspected
 
-If you want to iterate later or accept help:
+I reviewed the core app entry files and the PBL synopsis to prepare this README and suggestions:
 
-* Make the UI responsive (CSS grid / media queries)
-* Add a tiny backend (serverless) for PDF storage or email delivery (I can supply a minimal serverless presign/send example)
-* Improve Firestore schema & validation for production use
-
-I can also prepare a short post draft (X/LinkedIn) once you’re ready to share.
-
----
-
-## License
-
-MIT — do what you want, but please keep the origin note if you reuse this project.
+* `AndroidManifest.xml` — app entry, permissions and activity declarations. 
+* `MainActivity.java` — splash / launcher flow and starter logic. 
+* `activity_main.xml` — main layout sample & UI elements. 
+* Project synopsis / PBL document (requirements, goals, and testing notes). 
 
 ---
 
-If you want, I’ll:
+# Getting started (Android)
 
-* Paste this README as a ready-to-commit `README.md`, or
-* Add a short X/LinkedIn post draft and screenshots text you can copy-paste.
+## Prerequisites
 
-Which one next?
+* Android Studio (latest stable)
+* JDK 11+ (or as required by your Gradle)
+* Android device or emulator
+* Firebase project (you will need `google-services.json`)
+
+## Steps to run locally
+
+1. **Clone the repo**
+
+```bash
+git clone https://github.com/YOUR_USERNAME/black-gold-shift.git
+cd black-gold-shift
+```
+
+2. **Open in Android Studio**
+
+* File → Open → select the project root
+* Let Gradle sync and resolve dependencies
+
+3. **Add Firebase config**
+
+* Create a Firebase project, add an Android app with the same package name as in `AndroidManifest.xml`.
+* Download `google-services.json` and place it at `app/google-services.json`.
+
+4. **Build & Run**
+
+* Select device / emulator → Run
+  or run from terminal (see below).
+
+---
+
+# Firebase setup
+
+1. Go to [Firebase Console](https://console.firebase.google.com/) → Create project.
+2. Add Android app:
+
+   * Package name must match `AndroidManifest.xml`. 
+   * Download `google-services.json` → put into `app/`.
+3. Enable **Authentication** → Email / Password (or other providers you plan to use).
+4. Create **Firestore** (or Realtime DB). Start in test mode during development, then secure with rules before deployment.
+5. (Optional) Add **Cloud Functions** for server-side PDF generation and scheduled tasks.
+6. (Optional) Configure **Hosting** for the web dashboard.
+
+---
+
+# Build & run (CLI)
+
+From project root:
+
+```bash
+# build debug APK
+./gradlew assembleDebug
+
+# install on a connected device
+./gradlew installDebug
+```
+
+---
+
+# Project structure (example)
+
+```
+black-gold-shift/
+├─ app/
+│  ├─ src/main/AndroidManifest.xml
+│  ├─ java/.../MainActivity.java
+│  ├─ res/layout/activity_main.xml
+│  └─ google-services.json (local)
+├─ web-app/              # optional web dashboard
+├─ screenshots/
+├─ docs/
+└─ README.md
+```
+
+Important: keep `google-services.json` out of public repos if you prefer — add to `.gitignore` or provide a sample `google-services.json.example`.
+
+---
+
+# Tips for beginners (practical)
+
+* **Text sizes:** use `sp` for `android:textSize`, `dp` for padding/margins.
+* **Accessibility:** add `android:contentDescription` to `ImageView`s.
+* **Layouts:** `ConstraintLayout` gives better responsiveness; `LinearLayout` is fine for simple screens.
+* **Vector drawables:** prefer vectors (`.xml`) for icons to reduce APK size.
+* **Security:** never commit API keys or `google-services.json` if repository is public — either keep local or use environment variables.
+* **.gitignore** (basic):
+
+```
+*.iml
+/.gradle
+/local.properties
+/.idea
+/build
+/app/build
+```
+
+---
+
+# Contributing
+
+1. Fork the repo
+2. Create a feature branch: `git checkout -b feature/awesome`
+3. Commit changes: `git commit -m "Add awesome feature"`
+4. Push and open a PR
+
+Keep changes focused and include screenshots for UI modifications.
+
+---
+
+# Common troubleshooting
+
+* **Gradle sync fails:** update Gradle wrapper and Android Gradle plugin to compatible versions.
+* **Firebase auth issues:** ensure package name matches and SHA-1 (if using Google sign-in) is configured in Firebase console.
+* **APK not installing:** check `minSdkVersion` and device compatibility.
+
+---
+
+# Future enhancements (suggested)
+
+* Role-based permissions (fine-grained supervisor vs manager roles)
+* Offline caching with local DB (Room) & sync when online
+* CSV export in addition to PDF
+* Scheduled reports, email distribution, or ERP webhooks
+* Multi-language support (i18n)
+
+---
+
+# License
+
+This project is provided as a starter. Add a `LICENSE` file (MIT recommended for student projects).
+
+---
+
+# Contact
+
+If you want help adding screenshots, creating badges, or generating a PPT from this README, tell me which one and I’ll generate it next.
+
+---
+
+**Ready to use:** copy the full contents of this file into `README.md`, add your screenshots to `screenshots/` using the filenames above, then run:
+
+```bash
+git add README.md screenshots/*
+git commit -m "Add README and screenshots"
+git push origin main
+```
+
+Good luck — this README is written to be **clean, beginner-friendly, and ready for submission**.
