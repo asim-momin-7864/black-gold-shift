@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "firebase": "^11.0.1"
+    "firebase": "^12.6.0"
   },
   "description": ""
 }
