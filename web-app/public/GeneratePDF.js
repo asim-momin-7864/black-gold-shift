@@ -1,9 +1,23 @@
+// GeneratePDF.js
+// NOTE: PDF generation + local download is active.
+// Historically this file also uploaded PDFs to Firebase Storage
+// to provide a download link to Android users. That upload step
+// is currently DISABLED (commented) because Firebase Storage
+// is no longer available on the free plan for this project.
 
-// GeneratePDF.js (top)
-import { storage } from "../firebase/firebase.js";
-import { ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
+
+// The code below generates the PDF (jsPDF + html2canvas), saves locally,
+// and previously called uploadPDFToFirebase(...) to upload to Storage.
+// That upload call + upload function are retained but commented-out
 
 
+import { /* storage */ } from "../firebase/firebase.js"; // storage import kept but commented in usage
+// CDN Storage functions are left available (commented) in case of restore:
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
 
 document
   .getElementById("GeneratePDFButton")
@@ -24,13 +38,13 @@ document
       return `${day}-${month}-${year}-M`;
     };
 
-    let todaysDateForPDf = getDateForPDF();
-    let todaysDate = getDate();
+    const todaysDateForPDF = getDateForPDF();
+    const todaysDate = getDate();
 
     const { jsPDF } = window.jspdf;
     const element = document.getElementById("all-table-container");
 
-    // Capture the content with html2canvas at a high resolution
+    // Capture the DOM as a canvas and prepare the PDF.
     html2canvas(element, { scale: 2 }).then((canvas) => {
       const imgData = canvas.toDataURL("image/png");
       const pdf = new jsPDF("p", "mm", "a4");
@@ -44,18 +58,16 @@ document
       let position = marginTop + 10;
 
       pdf.setFontSize(24);
-      pdf.setTextColor(0, 0, 0);
       pdf.text("Coal Mining Shift Log", pdf.internal.pageSize.width / 2, 15, {
         align: "center",
       });
+
       pdf.setFontSize(12);
       pdf.text(
-        `Date: ${todaysDateForPDf}`,
+        `Date: ${todaysDateForPDF}`,
         pdf.internal.pageSize.width - marginLeft,
         15,
-        {
-          align: "right",
-        }
+        { align: "right" }
       );
 
       pdf.addImage(imgData, "PNG", marginLeft, position, imgWidth, imgHeight);
@@ -70,23 +82,21 @@ document
 
       const pdfBlob = pdf.output("blob");
 
-      uploadPDFToFirebase(pdfBlob, todaysDate); // Call Firebase upload function here
-
-      // Save PDF directly
+      // === LOCAL DOWNLOAD (active) ===
+      // This downloads directly to the user's device (zero infra).
       pdf.save(`${todaysDate}.pdf`);
+
+      // === UPLOAD TO CLOUD (DISABLED) ===
+      // Historically, we uploaded the PDF to Firebase Storage and saved
+      // the download URL in Firestore so Android users could fetch it.
+      // That upload step is currently disabled because Firebase Storage
+      // billing changed and we removed the free tier.
+
+
+      // Informational log so reviewers understand the current behaviour:
+      console.info(
+        "PDF generated and saved locally. Cloud upload is DISABLED (commented) — see README for details."
+      );
     });
   });
 
-// Function to upload PDF to Firebase Storage
-async function uploadPDFToFirebase(pdfBlob, fileName) {
-  const storageRef = ref(storage, `pdfs/${fileName}.pdf`);
-  try {
-    const snapshot = await uploadBytes(storageRef, pdfBlob);
-    const downloadURL = await getDownloadURL(snapshot.ref);
-    console.log("PDF uploaded successfully! Download URL:", downloadURL);
-    alert("PDF uploaded successfully! The download URL is ready.");
-  } catch (error) {
-    console.error("PDF upload failed:", error);
-    alert("Upload failed! Please try again.");
-  }
-}
