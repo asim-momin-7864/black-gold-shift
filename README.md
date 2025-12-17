@@ -126,25 +126,23 @@ black-gold-shift/
    * Shows structured data used for PDF
      ![Web Shift Log Table View](screenshots/web-shift-log.png)
 
-3. **Generated PDF (first page only)**
+3. **Generated PDF**
 
    * Confirms export works
      ![Generated PDF](screenshots/pdf-preview.png)
 
-4. **Android App – Login screen**
 
-   * Authentication for security
-   ![Android Login](screenshots/android-login.jpeg)
+## Android App (Data Entry)
 
-6. **Android App – Data entry screen**
+<p align="center">
+  <img src="screenshots/android-login.jpeg" width="220" />
+  <img src="screenshots/android-create-report.jpeg" width="220" />
+  <img src="screenshots/android-form.jpeg" width="220" />
+</p>
 
-   * Set report date
-   ![Android Data entry screen](screenshots/android-create-report.jpeg)
-
-8. **Android App - Input Form**
-   
-   * Take input from user 
-   ![Android Input Form](screenshots/android-form.jpeg)  
+<p align="center">
+  <em>Login, shift selection, and daily data entry screens</em>
+</p>
 
 ---
 
