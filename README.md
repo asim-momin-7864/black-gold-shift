@@ -136,13 +136,13 @@ black-gold-shift/
    * Authentication for security
    ![Android Login](screenshots/android-login.jpeg)
 
-6. **Android App – Data entry screen **
+6. **Android App – Data entry screen**
 
    * Set report date
    ![Android Data entry screen](screenshots/android-create-report.jpeg)
 
-8. **Android App - Input Form **
-
+8. **Android App - Input Form**
+   
    * Take input from user 
    ![Android Input Form](screenshots/android-form.jpeg)  
 
