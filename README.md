@@ -87,6 +87,17 @@ The Android app is mainly used by **supervisors/operators** to enter shift data 
 There is **no custom backend server**.
 
 ---
+## Architecture & Data Flow
+
+This project follows a simple App + Web + Firebase architecture.
+
+**System Architecture**
+![Architecture Diagram](docs/architecture.png)
+
+**Data Flow**
+![Data Flow Diagram](docs/data-flow.png)
+
+---
 
 ## How the system works (high level)
 
@@ -116,41 +127,32 @@ black-gold-shift/
 
 ---
 
-## Screenshots (recommended selection)
+## Screenshots
 
-> ⚠️ Keep screenshots **minimal**. Too many images make the README noisy.
-
-Suggested screenshots to keep:
 
 1. **Web Dashboard (Analysis page)**
 
    * Shows charts and KPI cards
+     ![Web Dashboard](screenshots/web-dashboard.png)
 
 2. **Web Shift Log Table view**
 
    * Shows structured data used for PDF
+     ![Web Shift Log Table View](screenshots/web-shift-log.png)
 
 3. **Generated PDF (first page only)**
 
    * Confirms export works
+     ![Generated PDF](screenshots/pdf-preview.png)
 
 4. **Android App – Login screen**
+   ![Android Login](screenshots/android-login.jpeg)
 
-5. **Android App – Data entry screen (any one module)**
+5. **Android App – Data entry screen **
+   ![Android Data entry screen](screenshots/android-create-report.jpeg)
 
-You can place them like this:
-
-```
-/screenshots
-  ├── web-dashboard.png
-  ├── web-shift-log.png
-  ├── pdf-preview.png
-  ├── android-login.png
-  └── android-form.png
-```
-
-Then reference them in README later if you want.
-(Images are optional — README is fine even without them.)
+6. **Android App - Input Form **
+   ![Android Input Form](screenshots/android-from.jpeg)  
 
 ---
 
