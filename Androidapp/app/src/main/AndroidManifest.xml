@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.MyApplication"
+        tools:targetApi="31">
+        <activity
+            android:name=".Datepdf"
+            android:exported="false" />
+        <activity
+            android:name=".CoalDispatched"
+            android:exported="false" />
+        <activity
+            android:name=".Washery"
+            android:exported="false" />
+        <activity
+            android:name=".SecurityInst"
+            android:exported="false" />
+        <activity
+            android:name=".DrillCoal"
+            android:exported="false" />
+        <activity
+            android:name=".ExplosivesCoal"
+            android:exported="false" />
+        <activity
+            android:name=".TripperCoal"
+            android:exported="false" />
+        <activity
+            android:name=".ShovelCoal"
+            android:exported="false" />
+        <activity
+            android:name=".CoalMinedAct.ShovelCoal"
+            android:exported="false" />
+        <activity
+            android:name=".CoalMinedAct.Shovel"
+            android:exported="false" />
+        <activity
+            android:name=".SurfaceMiner"
+            android:exported="false" />
+        <activity
+            android:name=".CoalMined"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity2"
+            android:exported="false" />
+        <activity
+            android:name=".Explosives"
+            android:exported="false" />
+        <activity
+            android:name=".Drill"
+            android:exported="false" />
+        <activity
+            android:name=".Tripper"
+            android:exported="false" />
+        <activity
+            android:name=".Shovel"
+            android:exported="false" />
+        <activity
+            android:name=".Overburden"
+            android:exported="false" />
+        <activity
+            android:name=".CreateRepo"
+            android:exported="false" />
+        <activity
+            android:name=".DateTime"
+            android:exported="false" />
+        <activity
+            android:name=".SignIn"
+            android:exported="false" />
+        <activity
+            android:name=".Dashboard"
+            android:exported="false" />
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

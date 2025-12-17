@@ -1,0 +1,47 @@
+<resources>
+    <string name="app_name">CoalIndus</string>
+    <string name="Select">Select Shift</string>
+    <!--<string name="SecurityBrifing">Safety Briefing: Conduct a safety briefing with all crew members before the shift begins. Remind workers of today’s tasks and associated hazards, particularly:
+        Haul road conditions after last night’s rain.\nOngoing blasting preparation in the north-east section.\nHigh dust levels due to dry conditions in the lower pit area.\n\nEquipment Inspection: Ensure all equipment operators perform pre-shift inspections on haul trucks, bulldozers, and excavators. Report any mechanical issues immediately.
+\n\nPPE Check: Verify that all workers are wearing the required personal protective equipment (PPE) including helmets, high-visibility vests, safety glasses, gloves, and respiratory protection.
+    </string>
+    <string name="SpecificTask">Overburden Removal (Zone B):\nMonitor the excavator operations in Zone B.\nEnsure proper loading procedures to avoid spillage or equipment damage.
+\nCheck that haul truck drivers maintain the speed limit on the haul roads, particularly in sharp turns.
+\nEnsure water trucks are actively spraying the haul roads to suppress dust.\n\n
+        Blasting Preparation (North-East Section):\n
+No entry to the north-east blasting area is allowed during the preparation period. Ensure this area is secured, with proper signage and barriers in place.
+Double-check that all personnel involved in the blasting operations are qualified and have signed off on the safety checklist.\n\n
+        Slope Monitoring:\nReview geotechnical reports on the east pit slopes after yesterday's minor movement. If any cracks or signs of instability are visible, stop work immediately and contact the geotechnical team.
+Regularly inspect the pit walls during the shift to ensure stability, especially after any blasting activity.
+    </string>
+    <string name="Traffic">Designated Routes: Confirm that all machinery follows the designated haul road routes. Use spotters in high-traffic areas to manage vehicle movement.\n\n
+        Pedestrian Safety: Ensure workers on foot remain in designated safe zones and wear reflective clothing. No walking is allowed near active haul roads unless directed by a spotter.
+    </string>
+
+    <string name="Environmental">Dust Control: Due to dry conditions in the lower pit area, make sure that water trucks are running continuously. Check the air quality monitors periodically and adjust operations if dust levels exceed safe thresholds.\n\n
+        Heat Stress: With rising temperatures, remind workers to take regular breaks and stay hydrated. Ensure access to shade and drinking water is available in all work areas.
+    </string>-->
+
+    <string name="SecurityBriefing">Safety Briefing: Conduct a safety briefing with all crew members before the shift begins. Remind workers of today’s tasks and associated hazards, particularly:
+        Haul road conditions after last night’s rain.\nOngoing blasting preparation in the north-east section.\nHigh dust levels due to dry conditions in the lower pit area.\n\nEquipment Inspection: Ensure all equipment operators perform pre-shift inspections on haul trucks, bulldozers, and excavators. Report any mechanical issues immediately.\n\nPPE Check: Verify that all workers are wearing the required personal protective equipment (PPE) including helmets, high-visibility vests, safety glasses, gloves, and respiratory protection.
+    </string>
+
+
+    <string name="SpecificTask">Overburden Removal (Zone B):\nMonitor the excavator operations in Zone B.\nEnsure proper loading procedures to avoid spillage or equipment damage.\nCheck that haul truck drivers maintain the speed limit on the haul roads, particularly in sharp turns.\nEnsure water trucks are actively spraying the haul roads to suppress dust.\n\nBlasting Preparation (North-East Section):\nNo entry to the north-east blasting area is allowed during the preparation period. Ensure this area is secured, with proper signage and barriers in place.\nDouble-check that all personnel involved in the blasting operations are qualified and have signed off on the safety checklist.\n
+        </string>
+
+    <string name="SpecificTask2">Slope Monitoring:\nReview geotechnical reports on the east pit slopes after yesterdays minor movement. If any cracks or signs of instability are visible, stop work immediately and contact the geotechnical team.Regularly inspect the pit walls during the shift to ensure stability, especially after any blasting activity.</string>
+
+    <string name="Traffic">Designated Routes: Confirm that all machinery follows the designated haul road routes. Use spotters in high-traffic areas to manage vehicle movement.\n\nPedestrian Safety: Ensure workers on foot remain in designated safe zones and wear reflective clothing. No walking is allowed near active haul roads unless directed by a spotter.
+        </string>
+
+    <string name="Environmental">Dust Control: Due to dry conditions in the lower pit area, make sure that water trucks are running continuously. Check the air quality monitors periodically and adjust operations if dust levels exceed safe thresholds.\n\nHeat Stress: With rising temperatures, remind workers to take regular breaks and stay hydrated. Ensure access to shade and drinking water is available in all work areas.
+        </string>
+
+
+    <string-array name="Shifts">
+        <item>Morning</item>
+        <item>Evening</item>
+        <item>Night</item>
+    </string-array>
+</resources>
