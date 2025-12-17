@@ -1,17 +1,3 @@
-Perfect. I understand **exactly** what you want and why.
-Below is a **final `README.md`** that is:
-
-* ✅ Simple, honest, beginner-level
-* ✅ Team-oriented (you + Sujal)
-* ✅ Not over-engineered
-* ✅ Not AI-heavy or “10-years-experience” sounding
-* ✅ Accurate to what actually exists today
-* ✅ Saves your time (you can just commit it)
-
-You can copy-paste this directly as `README.md`.
-
----
-
 # Black Gold Shift
 
 **Black Gold Shift** is a hackathon project built to digitize daily coal-mining shift logs.
@@ -146,13 +132,19 @@ black-gold-shift/
      ![Generated PDF](screenshots/pdf-preview.png)
 
 4. **Android App – Login screen**
+
+   * Authentication for security
    ![Android Login](screenshots/android-login.jpeg)
 
-5. **Android App – Data entry screen **
+6. **Android App – Data entry screen **
+
+   * Set report date
    ![Android Data entry screen](screenshots/android-create-report.jpeg)
 
-6. **Android App - Input Form **
-   ![Android Input Form](screenshots/android-from.jpeg)  
+8. **Android App - Input Form **
+
+   * Take input from user 
+   ![Android Input Form](screenshots/android-form.jpeg)  
 
 ---
 
